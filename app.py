@@ -70,8 +70,8 @@ through interactive explanations, games, and visual learning tools.
     st.write("")
 
     # LOGIN BUTTON → OPENS login.py
-    if st.button("🔑 Go to Login"):
-        st.switch_page("pages/1_login.py")
+    if st.button("🔑 Go to roadmap"):
+        st.switch_page("pages/2_roadmap.py")
 
 with col2:
 
