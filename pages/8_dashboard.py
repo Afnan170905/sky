@@ -7,7 +7,7 @@ st.set_page_config(page_title="ML Games Dashboard", page_icon="📊")
 st.title("📊 ML Games Performance Dashboard")
 
 # -----------------------------
-# INITIALIZE PROGRESS STORAGE
+# STORAGE
 # -----------------------------
 
 if "progress_history" not in st.session_state:
@@ -16,27 +16,28 @@ if "progress_history" not in st.session_state:
 if "last_saved_game" not in st.session_state:
     st.session_state.last_saved_game = None
 
-
 # -----------------------------
-# READ LIVE GAME DATA
-# -----------------------------
-
-current_score = st.session_state.get("score")
-current_index = st.session_state.get("index")
-current_game = st.session_state.get("game")
-
-
-# -----------------------------
-# DETECT GAME COMPLETION
+# READ GAME DATA
 # -----------------------------
 
-if current_index == 5 and current_game:
+current_score = st.session_state.get("score", 0)
+current_index = st.session_state.get("index", 0)
+current_game = st.session_state.get("game", None)
+
+TOTAL_ROUNDS = 5
+
+# -----------------------------
+# DETECT GAME FINISH
+# -----------------------------
+
+if current_index == TOTAL_ROUNDS and current_game:
 
     if st.session_state.last_saved_game != current_game:
 
-        attempt = len(
-            [g for g in st.session_state.progress_history if g["Game"] == current_game]
-        ) + 1
+        attempt = len([
+            g for g in st.session_state.progress_history
+            if g["Game"] == current_game
+        ]) + 1
 
         st.session_state.progress_history.append({
             "Game": current_game,
@@ -49,12 +50,12 @@ if current_index == 5 and current_game:
 
 
 # -----------------------------
-# SHOW DASHBOARD
+# DASHBOARD DISPLAY
 # -----------------------------
 
 if len(st.session_state.progress_history) == 0:
 
-    st.info("Play a game first to generate progress data.")
+    st.info("🎮 Play a game first to generate progress data.")
 
 else:
 
@@ -62,13 +63,13 @@ else:
 
     st.subheader("📄 Game Results")
 
-    st.dataframe(df)
+    st.dataframe(df, use_container_width=True)
 
     # -----------------------------
     # PROGRESS GRAPH
     # -----------------------------
 
-    st.subheader("📈 Performance Progress")
+    st.subheader("📈 Score Progress")
 
     st.line_chart(
         df,
@@ -78,7 +79,7 @@ else:
     )
 
     # -----------------------------
-    # PERFORMANCE ANALYTICS
+    # ANALYTICS
     # -----------------------------
 
     st.subheader("📊 Performance Summary")
@@ -87,8 +88,12 @@ else:
 
         game_df = df[df["Game"] == g]
 
-        st.write(f"### {g}")
-        st.write(f"Attempts: {len(game_df)}")
-        st.write(f"Average Score: {game_df['Score'].mean():.2f}")
-        st.write(f"Best Score: {game_df['Score'].max()}")
-        st.write("---")
+        st.markdown(f"### 🎮 {g}")
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric("Attempts", len(game_df))
+        col2.metric("Average Score", round(game_df["Score"].mean(),2))
+        col3.metric("Best Score", game_df["Score"].max())
+
+        st.divider()
