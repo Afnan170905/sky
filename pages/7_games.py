@@ -34,7 +34,7 @@ game = st.selectbox(
         "Model Matching Game"
     ]
 )
-
+st.session_state["game"] = game
 # -----------------------------
 # QUIZ QUESTIONS
 # -----------------------------
@@ -326,3 +326,9 @@ if st.session_state.game_started:
             if st.button("Play Again"):
                 st.session_state.game_started = False
                 st.rerun()
+                # -----------------------------
+# SHARE DATA WITH DASHBOARD
+# -----------------------------
+
+st.session_state["score"] = st.session_state.score
+st.session_state["index"] = st.session_state.index
